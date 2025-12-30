@@ -23,9 +23,9 @@ async function getMarkdownContent(slug: string) {
 
   if (!response.ok) {
     if (response.status === 404) {
-      return { markdownText: null, error: 'Стаття не знайдена' };
+      return { markdownText: null, error: 'Article not found' };
     }
-    return { markdownText: null, error: `Помилка завантаження: ${response.statusText}` };
+    return { markdownText: null, error: `Error loading content: ${response.statusText}` };
   }
 
   const markdownText = await response.text();
