@@ -21,8 +21,13 @@ const router = createRouter({
     },
     {
       path: '/wiki',
-      name: 'wiki',
+      name: 'wiki-home',
       component: () => import('../views/WikiPage.vue'),
+    },
+    {
+      path: '/wiki/:slug',
+      name: 'wiki-article',
+      component: () => import('../views/WikiArticlePage.vue'),
     },
   ],
 })
