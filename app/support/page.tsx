@@ -18,21 +18,21 @@ export default function SupportPage() {
             <div className="p-12 bg-slate-900/40 border border-slate-800 rounded text-center">
               <i className="fa-brands fa-github text-5xl text-white mb-8"></i>
               <h3 className="text-2xl font-black text-white uppercase mb-4">GitHub Issues</h3>
-              <p className="text-slate-500 text-sm leading-loose uppercase font-bold tracking-widest mb-10">Best for bug reports and technical feature requests.</p>
+              <p className="text-slate-500 text-sm leading-loose uppercase font-bold tracking-widest mb-10 break-words">Best for bug reports and technical feature requests.</p>
               <a href="https://github.com/xauth-ecosystem" className="block w-full py-4 border border-slate-700 text-white font-black uppercase tracking-widest text-xs hover:bg-white hover:text-black transition">Open Issue</a>
             </div>
 
             <div className="p-12 bg-blue-600 rounded text-center shadow-2xl shadow-blue-900/20">
               <i className="fa-brands fa-telegram text-5xl text-white mb-8"></i>
               <h3 className="text-2xl font-black text-white uppercase mb-4">Telegram</h3>
-              <p className="text-blue-100 text-sm leading-loose uppercase font-bold tracking-widest mb-10">Real-time community support and announcements.</p>
+              <p className="text-blue-100 text-sm leading-loose uppercase font-bold tracking-widest mb-10 break-words">Real-time community support and announcements.</p>
               <a href="https://t.me/xauth_ecosystem" className="block w-full py-4 bg-white text-blue-600 font-black uppercase tracking-widest text-xs hover:bg-slate-100 transition">Join Channel</a>
             </div>
 
             <div className="p-12 bg-slate-900/40 border border-slate-800 rounded text-center">
               <i className="fa-solid fa-book text-5xl text-blue-500 mb-8"></i>
               <h3 className="text-2xl font-black text-white uppercase mb-4">Self-Help</h3>
-              <p className="text-slate-500 text-sm leading-loose uppercase font-bold tracking-widest mb-10">Detailed guides covering every aspect of the ecosystem.</p>
+              <p className="text-slate-500 text-sm leading-loose uppercase font-bold tracking-widest mb-10 break-words">Detailed guides covering every aspect of the ecosystem.</p>
               <Link href="/wiki" className="block w-full py-4 border border-slate-700 text-white font-black uppercase tracking-widest text-xs hover:bg-white hover:text-black transition">Read Wiki</Link>
             </div>
           </div>

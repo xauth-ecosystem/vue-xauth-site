@@ -27,14 +27,14 @@ export default function WikiSidebar({ wikiStructure, loading }: WikiSidebarProps
         <aside className="w-full md:w-80 shrink-0">
             <nav className="md:sticky md:top-32 space-y-12">
                 {loading ? (
-                    <div><h5 className="text-white font-black text-[10px] uppercase tracking-[0.3em] mb-8">Loading Wiki...</h5></div>
+                    <div><h5 className="text-white font-black text-[10px] uppercase tracking-[0.3em] mb-8 break-words">Loading Wiki...</h5></div>
                 ) : wikiStructure.length > 0 ? (
                     wikiStructure.map((section, sectionIndex) => (
                         <div key={sectionIndex}>
-                            <h5 className="text-white font-black text-[10px] uppercase tracking-[0.3em] mb-8">{section.title}</h5>
+                            <h5 className="text-white font-black text-[10px] uppercase tracking-[0.3em] mb-8 break-words">{section.title}</h5>
                             <ul className="space-y-6 border-l border-slate-800 ml-1">
                                 {section.items.map((item, itemIndex) => (
-                                    <li key={itemIndex} className={`pl-6 ${currentSlug === item.slug ? 'border-l-2 border-blue-600 -ml-px text-white font-bold uppercase text-xs tracking-widest' : 'text-slate-500 hover:text-white transition cursor-pointer font-bold uppercase text-xs tracking-widest'}`}>
+                                    <li key={itemIndex} className={`pl-6 ${currentSlug === item.slug ? 'border-l-2 border-blue-600 -ml-px text-white font-bold uppercase text-xs tracking-widest break-words' : 'text-slate-500 hover:text-white transition cursor-pointer font-bold uppercase text-xs tracking-widest break-words'}`}>
                                         <Link href={`/wiki/${item.slug}`} className="block">
                                             {item.label}
                                         </Link>
@@ -45,7 +45,7 @@ export default function WikiSidebar({ wikiStructure, loading }: WikiSidebarProps
                     ))
                 ) : (
                     <div>
-                        <h5 className="text-white font-black text-[10px] uppercase tracking-[0.3em] mb-8">No Wiki Sections</h5>
+                        <h5 className="text-white font-black text-[10px] uppercase tracking-[0.3em] mb-8 break-words">No Wiki Sections</h5>
                         <p className="text-slate-500 text-sm">
                             Could not load wiki structure. Please check the `_wiki_structure.json` in your documentation repository.
                         </p>

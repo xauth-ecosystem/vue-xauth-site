@@ -9,7 +9,7 @@ export default function HomePage() {
       </Head>
       <section className="pt-48 pb-32 border-b border-slate-900 bg-gradient-to-b from-[#020617] to-[#0f172a]">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <h1 className="text-6xl md:text-8xl font-black text-white leading-none mb-8">
+          <h1 className="text-6xl md:text-8xl font-black text-white leading-none mb-8 break-words">
             ADVANCED IDENTITY <br />INFRASTRUCTURE
           </h1>
           <p className="text-2xl text-slate-400 max-w-3xl mx-auto font-normal leading-relaxed mb-12">
