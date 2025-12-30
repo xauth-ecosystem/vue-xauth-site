@@ -4,26 +4,13 @@
   <meta charset="utf-8">
   <title>Redirecting...</title>
   <script type="text/javascript">
-    // Single Page Apps for GitHub Pages
-    // MIT License
-    // https://github.com/rafgraph/spa-github-pages
-    // This script redirects all 404 errors to index.html with the correct path.
-    // This ensures that refreshing deep links in SPAs works correctly.
-
-    (function(){
-      var redirect = sessionStorage.getItem('redirect');
-      if (redirect) {
-        sessionStorage.removeItem('redirect');
-        history.replaceState(null, null, redirect);
-      }
-    })();
-
     var path = window.location.pathname;
     var query = window.location.search;
-
-    if (path.length > 1 && path !== '/index.html' && !path.includes('.')) {
-      sessionStorage.setItem('redirect', path + query);
-      window.location.replace('/index.html');
+    // Redirect all paths that would 404 to index.html with the path as a hash
+    // This allows Vue Router to pick up the route.
+    // Example: /wiki -> /index.html#/wiki
+    if (path !== '/' && !path.includes('.') && path !== '/index.html') {
+      window.location.replace('/index.html#' + path + query);
     }
   </script>
 </head>
