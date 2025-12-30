@@ -1,66 +1,59 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
 import MarkdownIt from 'markdown-it';
 import Head from 'next/head';
 
 const md = new MarkdownIt();
 
-export default function WikiArticlePage() {
-  const { slug } = useParams(); // Get slug from route parameters
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [renderedMarkdown, setRenderedMarkdown] = useState('');
-  const [title, setTitle] = useState('');
+interface WikiArticlePageProps {
+  params: { slug: string };
+}
 
-  // Define the base URL for your documentation repository's raw content
+// Implement generateStaticParams to tell Next.js which pages to pre-render
+export async function generateStaticParams() {
+  const slugs = ['introduction', 'getting-started', 'faq']; // Hardcoded example slugs
+
+  return slugs.map((slug) => ({
+    slug: slug,
+  }));
+}
+
+// Data fetching at build time for SSG
+async function getMarkdownContent(slug: string) {
   const DOCS_REPO_RAW_BASE_URL = 'https://raw.githubusercontent.com/xauth-ecosystem/xauth-docs/main';
+  const response = await fetch(`${DOCS_REPO_RAW_BASE_URL}/${slug}.md`);
 
-  useEffect(() => {
-    const fetchAndRenderMarkdown = async () => {
-      if (!slug) {
-        setError(new Error('Slug is missing.'));
-        setLoading(false);
-        return;
-      }
+  if (!response.ok) {
+    if (response.status === 404) {
+      return { markdownText: null, error: 'Стаття не знайдена' };
+    }
+    return { markdownText: null, error: `Помилка завантаження: ${response.statusText}` };
+  }
 
-      setLoading(true);
-      setError(null);
-      setRenderedMarkdown('');
-      setTitle('');
+  const markdownText = await response.text();
+  return { markdownText, error: null };
+}
 
-      try {
-        const response = await fetch(`${DOCS_REPO_RAW_BASE_URL}/${slug}.md`);
+export default async function WikiArticlePage({ params }: WikiArticlePageProps) {
+  const { slug } = params;
+  const { markdownText, error: fetchError } = await getMarkdownContent(slug);
 
-        if (!response.ok) {
-          if (response.status === 404) {
-            throw new Error('Статтю не знайдено');
-          }
-          throw new Error(`Помилка завантаження: ${response.statusText}`);
-        }
+  let renderedMarkdown = '';
+  let title = '';
+  let errorToDisplay: string | null = null;
 
-        const markdownText = await response.text();
-
-        // Extract title from the first line if it starts with #
-        const firstLine = markdownText.split('\n')[0];
-        if (firstLine && firstLine.startsWith('#')) {
-          setTitle(firstLine.replace(/^#\s*/, '').trim());
-        } else {
-          setTitle(String(slug).split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')); // Basic title from slug
-        }
-
-        setRenderedMarkdown(md.render(markdownText));
-      } catch (err) {
-        setError(err as Error);
-        console.error('Failed to fetch or render markdown:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAndRenderMarkdown();
-  }, [slug]); // Re-run effect when slug changes
+  if (fetchError) {
+    errorToDisplay = fetchError;
+  } else if (!markdownText) {
+    errorToDisplay = 'Стаття не знайдена'; // Should be caught by fetchError, but as a fallback
+  } else {
+    // Extract title from the first line if it starts with #
+    const firstLine = markdownText.split('\n')[0];
+    if (firstLine && firstLine.startsWith('#')) {
+      title = firstLine.replace(/^#\s*/, '').trim();
+    } else {
+      title = slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '); // Basic title from slug
+    }
+    renderedMarkdown = md.render(markdownText);
+  }
 
   return (
     <>
@@ -68,20 +61,18 @@ export default function WikiArticlePage() {
         <title>{title ? `${title} | Wiki` : 'Wiki'} | XAuth Ecosystem</title>
       </Head>
       <div className="wiki-article py-20 px-4 max-w-4xl mx-auto">
-        <div className="pt-32" v-if={loading}>
-          <div className="text-center text-slate-300">
-            Завантаження...
+        {errorToDisplay ? (
+          <div className="pt-32">
+            <div className="text-center text-red-500">
+              {errorToDisplay}
+            </div>
           </div>
-        </div>
-        <div className="pt-32" v-else-if={error}>
-          <div className="text-center text-red-500">
-            Статтю не знайдено або сталася помилка: {error.message}
+        ) : (
+          <div className="pt-32">
+            <h1 className="text-4xl font-bold text-white mb-6">{title}</h1>
+            <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: renderedMarkdown }}></div>
           </div>
-        </div>
-        <div v-else className="pt-32">
-          <h1 className="text-4xl font-bold text-white mb-6">{title}</h1>
-          <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: renderedMarkdown }}></div>
-        </div>
+        )}
       </div>
     </>
   );
