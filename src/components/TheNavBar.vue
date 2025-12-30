@@ -5,7 +5,7 @@
                 <i class="fa-solid fa-shield-halved text-blue-500"></i> XAUTH
             </RouterLink>
             <div class="hidden md:flex items-center gap-10 text-[14px] font-bold uppercase tracking-widest">
-                <RouterLink to="/" class="text-blue-500">Overview</RouterLink>
+                <RouterLink to="/" class="">Overview</RouterLink>
                 <RouterLink to="/wiki" class="hover:text-white transition">Wiki</RouterLink>
                 <RouterLink to="/download" class="hover:text-white transition">Downloads</RouterLink>
                 <RouterLink to="/support" class="hover:text-white transition">Support</RouterLink>
@@ -19,7 +19,7 @@
         </div>
         <div id="mobile-menu" :class="{ 'hidden': !isMobileMenuOpen }" class="md:hidden bg-[#020617] border-t border-slate-800">
             <div class="px-6 py-4 space-y-4">
-                <RouterLink to="/" class="block text-blue-500 font-bold uppercase tracking-widest">Overview</RouterLink>
+                <RouterLink to="/" class="block font-bold uppercase tracking-widest">Overview</RouterLink>
                 <RouterLink to="/wiki" class="block hover:text-white transition font-bold uppercase tracking-widest">Wiki</RouterLink>
                 <RouterLink to="/download" class="block hover:text-white transition font-bold uppercase tracking-widest">Downloads</RouterLink>
                 <RouterLink to="/support" class="block hover:text-white transition font-bold uppercase tracking-widest">Support</RouterLink>

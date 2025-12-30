@@ -7,6 +7,10 @@ body {
   @apply bg-[#020617] text-slate-300 antialiased;
 }
 
+.router-link-active {
+  @apply text-blue-500;
+}
+
 /*
 #app {
   max-width: 1280px;
