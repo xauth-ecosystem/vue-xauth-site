@@ -33,7 +33,7 @@ async function getMarkdownContent(slug: string) {
 }
 
 export default async function WikiArticlePage({ params }: WikiArticlePageProps) {
-  const { slug } = params;
+  const { slug } = await params;
   const { markdownText, error: fetchError } = await getMarkdownContent(slug);
 
   let renderedMarkdown = '';
