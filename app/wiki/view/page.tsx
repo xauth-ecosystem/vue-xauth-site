@@ -1,10 +1,12 @@
 import { Suspense } from 'react';
 import WikiArticle from './WikiArticle';
+import MarkdownIt from 'markdown-it';
+
+const md = new MarkdownIt();
 
 export default function WikiArticlePage() {
   const articleFallback = (
-    <div className="prose prose-invert max-w-none">
-      Loading article...
+    <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: md.render('# Loading article...') }}>
     </div>
   );
 
