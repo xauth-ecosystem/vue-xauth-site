@@ -1,6 +1,10 @@
-import { redirect } from 'next/navigation';
+'use client';
 
-// Define the base URL for your documentation repository's raw content
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+// This component now handles client-side redirection for static export environments
+
 const DOCS_REPO_RAW_BASE_URL = 'https://raw.githubusercontent.com/xauth-ecosystem/xauth-docs/main';
 
 interface WikiItem {
@@ -31,37 +35,48 @@ async function getWikiStructure(): Promise<WikiSection[]> {
   }
 }
 
-export default async function WikiPage() {
-  const structure = await getWikiStructure();
-  
-  let targetSlug: string | null = null;
-  const allItems: WikiItem[] = [];
+export default function WikiPage() {
+  const router = useRouter();
+  const [message, setMessage] = useState('Finding the default article to redirect...');
 
-  for (const section of structure) {
-    for (const item of section.items) {
-      allItems.push(item);
-      if (item.default) {
-        targetSlug = item.slug;
-        break;
+  useEffect(() => {
+    const findAndRedirect = async () => {
+      const structure = await getWikiStructure();
+      
+      let targetSlug: string | null = null;
+      const allItems: WikiItem[] = [];
+
+      for (const section of structure) {
+        for (const item of section.items) {
+          allItems.push(item);
+          if (item.default) {
+            targetSlug = item.slug;
+            break;
+          }
+        }
+        if (targetSlug) break;
       }
-    }
-    if (targetSlug) break;
-  }
 
-  if (!targetSlug && allItems.length > 0) {
-    const randomIndex = Math.floor(Math.random() * allItems.length);
-    targetSlug = allItems[randomIndex].slug;
-  }
+      // Fallback to the first item if no default is set
+      if (!targetSlug && allItems.length > 0) {
+        targetSlug = allItems[0].slug;
+      }
 
-  if (targetSlug) {
-    redirect(`/wiki/view?slug=${targetSlug}`);
-  }
+      if (targetSlug) {
+        router.replace(`/wiki/view?slug=${targetSlug}`);
+      } else {
+        setMessage('Could not find any articles to redirect to. Please check the wiki structure.');
+      }
+    };
+
+    findAndRedirect();
+  }, [router]);
 
   return (
     <div className="flex-1">
       <h1 className="text-4xl font-bold text-white mb-6">Welcome to the Wiki!</h1>
       <p className="text-slate-400 leading-relaxed mb-8">
-        No articles found. Please check back later.
+        {message}
       </p>
     </div>
   );
