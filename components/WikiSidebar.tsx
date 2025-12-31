@@ -2,56 +2,12 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-
-interface WikiItem {
-  slug: string;
-  label: string;
-  default?: boolean;
-}
-
-interface WikiSection {
-  title: string;
-  slug?: string;
-  items: WikiItem[];
-}
-
-const DOCS_REPO_RAW_BASE_URL = 'https://raw.githubusercontent.com/xauth-ecosystem/xauth-docs/main';
-
-async function getWikiStructure(): Promise<WikiSection[]> {
-  try {
-    const response = await fetch(`${DOCS_REPO_RAW_BASE_URL}/_wiki_structure.json`, {
-      cache: 'no-store', // Always fetch the latest version
-    });
-
-    if (!response.ok) {
-      console.error(`Failed to fetch wiki structure: ${response.statusText}`);
-      return [];
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error('Error fetching wiki structure:', error);
-    return [];
-  }
-}
+import { useWiki, WikiSection } from '@/contexts/WikiContext';
 
 export default function WikiSidebar() {
     const searchParams = useSearchParams();
     const currentSlug = searchParams.get('slug');
-    const [wikiStructure, setWikiStructure] = useState<WikiSection[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchStructure = async () => {
-            setLoading(true);
-            const structure = await getWikiStructure();
-            setWikiStructure(structure);
-            setLoading(false);
-        };
-
-        fetchStructure();
-    }, []);
+    const { wikiStructure, loading } = useWiki();
 
     return (
         <aside className="w-full md:w-80 shrink-0">
@@ -59,7 +15,7 @@ export default function WikiSidebar() {
                 {loading ? (
                     <div><h5 className="text-white font-black text-[10px] uppercase tracking-[0.3em] mb-8 break-words">Loading Wiki...</h5></div>
                 ) : wikiStructure.length > 0 ? (
-                    wikiStructure.map((section, sectionIndex) => (
+                    wikiStructure.map((section: WikiSection, sectionIndex: number) => (
                         <div key={sectionIndex}>
                             <h5 className="text-white font-black text-[10px] uppercase tracking-[0.3em] mb-8 break-words">{section.title}</h5>
                             <ul className="space-y-6 border-l border-slate-800 ml-1">

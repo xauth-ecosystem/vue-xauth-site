@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import MarkdownIt from 'markdown-it';
+import { DOCS_REPO_RAW_BASE_URL } from '@/lib/constants';
 import { useSearchParams } from 'next/navigation';
 
 const md = new MarkdownIt();
-
-const DOCS_REPO_RAW_BASE_URL = 'https://raw.githubusercontent.com/xauth-ecosystem/xauth-docs/main';
 
 export default function WikiArticle() {
   const searchParams = useSearchParams();
