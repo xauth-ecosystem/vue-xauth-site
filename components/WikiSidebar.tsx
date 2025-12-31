@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface WikiItem {
   slug: string;
@@ -15,14 +16,42 @@ interface WikiSection {
   items: WikiItem[];
 }
 
-interface WikiSidebarProps {
-    wikiStructure: WikiSection[];
-    loading: boolean;
+const DOCS_REPO_RAW_BASE_URL = 'https://raw.githubusercontent.com/xauth-ecosystem/xauth-docs/main';
+
+async function getWikiStructure(): Promise<WikiSection[]> {
+  try {
+    const response = await fetch(`${DOCS_REPO_RAW_BASE_URL}/_wiki_structure.json`, {
+      cache: 'no-store', // Always fetch the latest version
+    });
+
+    if (!response.ok) {
+      console.error(`Failed to fetch wiki structure: ${response.statusText}`);
+      return [];
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching wiki structure:', error);
+    return [];
+  }
 }
 
-export default function WikiSidebar({ wikiStructure, loading }: WikiSidebarProps) {
-    const pathname = usePathname();
-    const currentSlug = pathname.split('/').pop();
+export default function WikiSidebar() {
+    const searchParams = useSearchParams();
+    const currentSlug = searchParams.get('slug');
+    const [wikiStructure, setWikiStructure] = useState<WikiSection[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchStructure = async () => {
+            setLoading(true);
+            const structure = await getWikiStructure();
+            setWikiStructure(structure);
+            setLoading(false);
+        };
+
+        fetchStructure();
+    }, []);
 
     return (
         <aside className="w-full md:w-80 shrink-0">
@@ -36,7 +65,7 @@ export default function WikiSidebar({ wikiStructure, loading }: WikiSidebarProps
                             <ul className="space-y-6 border-l border-slate-800 ml-1">
                                 {section.items.map((item, itemIndex) => (
                                     <li key={itemIndex} className={`pl-6 ${currentSlug === item.slug ? 'border-l-2 border-blue-600 -ml-px text-white font-bold uppercase text-xs tracking-widest break-words' : 'text-slate-500 hover:text-white transition cursor-pointer font-bold uppercase text-xs tracking-widest break-words'}`}>
-                                        <Link href={`/wiki/${item.slug}`} className="block">
+                                        <Link href={`/wiki/view?slug=${item.slug}`} className="block">
                                             {item.label}
                                         </Link>
                                     </li>
