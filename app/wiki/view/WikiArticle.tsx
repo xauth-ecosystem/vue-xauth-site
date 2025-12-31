@@ -68,15 +68,19 @@ export default function WikiArticle() {
     fetchMarkdownContent();
   }, [slug]);
 
+  const renderedMarkdown = md.render(markdownText);
+
   if (loading) {
-    return <div>Loading article...</div>;
+    return (
+        <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: md.render('# Loading article...') }}></div>
+    );
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+        <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: md.render(`# Error\n\nAn error occurred while loading the article: ${error}`) }}></div>
+    );
   }
-  
-  const renderedMarkdown = md.render(markdownText);
 
   return (
     <div className="prose prose-invert max-w-none">

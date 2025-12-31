@@ -2,6 +2,9 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import MarkdownIt from 'markdown-it';
+
+const md = new MarkdownIt();
 
 // This component now handles client-side redirection for static export environments
 
@@ -72,12 +75,10 @@ export default function WikiPage() {
     findAndRedirect();
   }, [router]);
 
+  const markdownContent = `# Welcome to the Wiki!\n\n${message}`;
+
   return (
-    <div className="flex-1">
-      <h1 className="text-4xl font-bold text-white mb-6">Welcome to the Wiki!</h1>
-      <p className="text-slate-400 leading-relaxed mb-8">
-        {message}
-      </p>
+    <div className="prose prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: md.render(markdownContent) }}>
     </div>
   );
 }
